@@ -28,9 +28,10 @@ export class PrismaProductRepository implements ProductRepository {
       currentPrice: product.currentPrice,
       oldPrice: product.oldPrice,
       link: product.link,
-      discountPercentage: product.discountPercentage,
+      discountPercentage: product.discountPercentage ? Number(product.discountPercentage) : null,
       discountAmount: product.discountAmount,
       currency: product.currency,
+      scrapedAt: product.scrapedAt,
       createdAt: product.createdAt,
       updatedAt: product.updatedAt,
       deletedAt: product.deletedAt

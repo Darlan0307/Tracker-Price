@@ -10,11 +10,12 @@ export type Product = {
   classification: number | null
   platform: PlatformType
   currentPrice: number
-  oldPrice: number
+  oldPrice: number | null
   link: string
-  discountPercentage: number
-  discountAmount: number
+  discountPercentage: number | null
+  discountAmount: number | null
   currency: string
+  scrapedAt: Date
   createdAt: Date
   updatedAt: Date
   deletedAt: Date | null
@@ -27,9 +28,24 @@ export type NewProductData = {
   classification?: number
   platform: PlatformType
   currentPrice: number
-  oldPrice: number
+  oldPrice?: number
   link: string
   discountPercentage?: number
   discountAmount?: number
   currency: string
+  scrapedAt: Date
+}
+
+export type ProductScraperData = {
+  name: string
+  image: string
+  classification?: number
+  platform: PlatformType
+  currentPrice: number
+  oldPrice?: number
+  link: string
+  discountPercentage?: number
+  discountAmount?: number
+  currency: string
+  scrapedAt: Date
 }

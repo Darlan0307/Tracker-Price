@@ -1,11 +1,17 @@
 import { BaseUseCase, validatePlatformLink } from "@shared/use-cases"
-import { CreateEntityError, InvalidInputError, NotFoundError } from "@infra/errors"
+import {
+  CreateEntityError,
+  InvalidInputError,
+  NotFoundError,
+  ProductScraperError
+} from "@infra/errors"
 import { Product } from "../types"
 import { UserRepository } from "@app/users/repository"
 import { ProductRepository } from "../repository"
 import { ProductSchema } from "../schema"
+import { ProductScraper } from "../services"
 
-type UseCaseErrors = InvalidInputError | NotFoundError | CreateEntityError
+type UseCaseErrors = InvalidInputError | NotFoundError | CreateEntityError | ProductScraperError
 export class ProductCreateUseCase extends BaseUseCase<
   createProductPayload,
   Product,
@@ -13,7 +19,8 @@ export class ProductCreateUseCase extends BaseUseCase<
 > {
   constructor(
     private userRepository: UserRepository,
-    private productRepository: ProductRepository
+    private productRepository: ProductRepository,
+    private productScraper: ProductScraper
   ) {
     super(CreateEntityError, "Erro ao criar o produto", ProductSchema)
   }
@@ -28,20 +35,25 @@ export class ProductCreateUseCase extends BaseUseCase<
       return new NotFoundError(`Usuário não encontrado.`)
     }
 
-    if (validatePlatformLink(data.productLink)) {
+    if (!validatePlatformLink(data.link)) {
       return new InvalidInputError(
         "Link inválido. Por enquanto só aceitamos links do Mercado Livre."
       )
     }
 
-    // Chamar service de extração de dados do produto
+    const scrapedData = await this.productScraper.scrapeProduct(data.link)
+
+    if (scrapedData instanceof ProductScraperError || scrapedData instanceof NotFoundError) {
+      return scrapedData
+    }
 
     return this.productRepository.save({
-      userId
+      userId,
+      ...scrapedData
     })
   }
 }
 
 type createProductPayload = {
-  productLink: string
+  link: string
 }

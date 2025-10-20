@@ -9,19 +9,23 @@ import { logger } from "@infra/logger"
 import { createAuthRoutes } from "@app/auth/http"
 import { apiLimiter, createAuthMiddleware, errorHandler } from "@infra/middlewares"
 import { prismaDB } from "@shared/prisma"
+import { ProductScraper } from "@app/products/services"
+import { createProductsRoutes } from "@app/products/http"
 
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173"
 
 export default class HttpServer {
   private app: Express
+  private productScraper: ProductScraper
 
   constructor() {
     this.app = express()
+    this.productScraper = new ProductScraper()
   }
 
   async createApp(): Promise<Express> {
     try {
-      await prismaDB.$connect()
+      await Promise.all([prismaDB.$connect(), this.productScraper.initialize()])
       this.loadMiddlewares()
       this.loadRoutes()
       return this.app
@@ -34,7 +38,7 @@ export default class HttpServer {
   async stop(): Promise<void> {
     try {
       logger.info("Encerrando servidor...")
-      await prismaDB.$disconnect()
+      await Promise.all([this.productScraper.close(), prismaDB.$disconnect()])
     } catch (error) {
       logger.error("Erro ao fechar conexão com o banco de dados:" + JSON.stringify(error, null, 2))
     }
@@ -93,6 +97,7 @@ export default class HttpServer {
     const router = Router()
     this.app.use(router)
     createAuthRoutes(router)
+    createProductsRoutes(router, this.productScraper)
     this.app.use(errorHandler)
   }
 }

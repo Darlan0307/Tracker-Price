@@ -4,7 +4,7 @@ import { TokenService } from "@infra/services"
 import { Request, Response, NextFunction, RequestHandler } from "express"
 
 const PUBLIC_ROUTES = {
-  exact: ["/", "/health", "/auth/google", "/auth/google/callback"]
+  exact: ["/", "/health", "/auth/google", "/auth/google/callback", "/products"]
 }
 
 export function createAuthMiddleware(): RequestHandler {

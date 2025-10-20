@@ -9,6 +9,7 @@ import {
   InvalidInputError,
   ListEntityError,
   NotFoundError,
+  ProductScraperError,
   UpdateEntityError
 } from "@infra/errors"
 import { PaginationRequest } from "@app/global-types"
@@ -107,7 +108,8 @@ export function makeResponse(result: any, cb: Function | null = ok): any {
     [CreateEntityError, serverError],
     [GetEntityError, serverError],
     [DeleteEntityError, serverError],
-    [ListEntityError, serverError]
+    [ListEntityError, serverError],
+    [ProductScraperError, serverError]
   ])
 
   for (const [ErrorType, responseFunc] of errorMap) {
