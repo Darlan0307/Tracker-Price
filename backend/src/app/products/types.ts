@@ -36,6 +36,15 @@ export type NewProductData = {
   scrapedAt: Date
 }
 
+export type UpdateProductData = {
+  classification?: number
+  currentPrice?: number
+  oldPrice?: number
+  discountPercentage?: number
+  discountAmount?: number
+  scrapedAt: Date
+}
+
 export type ProductScraperData = {
   name: string
   image: string

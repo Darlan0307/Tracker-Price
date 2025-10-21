@@ -2,6 +2,7 @@
 import { logger } from "@infra/logger"
 import { HttpRequest, HttpResponse } from "./http-response"
 import {
+  AccessDeniedEntityError,
   ConflictEntityError,
   CreateEntityError,
   DeleteEntityError,
@@ -10,6 +11,7 @@ import {
   ListEntityError,
   NotFoundError,
   ProductScraperError,
+  UnauthorizedActionError,
   UpdateEntityError
 } from "@infra/errors"
 import { PaginationRequest } from "@app/global-types"
@@ -62,6 +64,16 @@ export const serverError = (error: Error | unknown): HttpResponse => {
   }
 }
 
+export const unauthorized = (error: Error): HttpResponse => ({
+  statusCode: 401,
+  body: { errorMessage: error.message }
+})
+
+export const forbidden = (error?: Error): HttpResponse => ({
+  statusCode: 403,
+  body: { errorMessage: error?.message || "" }
+})
+
 export const conflict = (error?: Error): HttpResponse => ({
   statusCode: 409,
   body: { errorMessage: error?.message || "conflict" }
@@ -104,6 +116,8 @@ export function makeResponse(result: any, cb: Function | null = ok): any {
     [NotFoundError, notFound],
     [InvalidInputError, badRequest],
     [ConflictEntityError, conflict],
+    [UnauthorizedActionError, unauthorized],
+    [AccessDeniedEntityError, forbidden],
     [UpdateEntityError, serverError],
     [CreateEntityError, serverError],
     [GetEntityError, serverError],

@@ -4,7 +4,7 @@ import { TokenService } from "@infra/services"
 import { Request, Response, NextFunction, RequestHandler } from "express"
 
 const PUBLIC_ROUTES = {
-  exact: ["/", "/health", "/auth/google", "/auth/google/callback", "/products"]
+  exact: ["/", "/health", "/auth/google", "/auth/google/callback"]
 }
 
 export function createAuthMiddleware(): RequestHandler {
@@ -20,13 +20,13 @@ export function createAuthMiddleware(): RequestHandler {
     try {
       const token = req.cookies["auth-token"]
       if (!token) {
-        res.status(403).json({ errorMessage: "Você não está autenticado" })
+        res.status(401).json({ errorMessage: "Você não está autenticado" })
         return
       }
 
       const decoded = tokenService.verifyToken(token)
       if (!decoded) {
-        res.status(403).json({ errorMessage: "Token inválido" })
+        res.status(401).json({ errorMessage: "Token inválido" })
         return
       }
 
@@ -36,7 +36,7 @@ export function createAuthMiddleware(): RequestHandler {
 
       next()
     } catch (error) {
-      res.status(403).json({
+      res.status(401).json({
         errorMessage: "Erro ao verificar autenticação: " + JSON.stringify(error, null, 2)
       })
       return

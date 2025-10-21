@@ -6,10 +6,10 @@ import {
   ProductScraperError
 } from "@infra/errors"
 import { Product } from "../types"
-import { UserRepository } from "@app/users/repository"
 import { ProductRepository } from "../repository"
 import { ProductSchema } from "../schema"
 import { ProductScraper } from "../services"
+import { UserRepository } from "@app/users/repository"
 
 type UseCaseErrors = InvalidInputError | NotFoundError | CreateEntityError | ProductScraperError
 export class ProductCreateUseCase extends BaseUseCase<
