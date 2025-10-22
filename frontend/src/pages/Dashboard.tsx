@@ -100,7 +100,7 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
-      <AuthHeader currentPlan={currentPlan} />
+      <AuthHeader />
 
       <div className="container mx-auto px-4 py-4 md:py-8">
         <AddProductSection

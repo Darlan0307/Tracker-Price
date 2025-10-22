@@ -2,14 +2,11 @@ import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
 import GoogleLoginButton from "@/components/shared/GoogleLoginButton";
 import AnimatedSection from "@/components/shared/AnimatedSection";
-import { useNavigate } from "react-router-dom";
+import { redirectRouteLogin } from "@/utils";
 
 const HeroSection = () => {
-  const navigate = useNavigate();
-
   const handleGoogleLogin = () => {
-    // TODO: Implement Google OAuth
-    navigate("/dashboard");
+    redirectRouteLogin();
   };
 
   return (

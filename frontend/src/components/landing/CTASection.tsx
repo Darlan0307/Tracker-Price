@@ -1,13 +1,10 @@
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
 import AnimatedSection from "@/components/shared/AnimatedSection";
+import { redirectRouteLogin } from "@/utils";
 
 const CTASection = () => {
-  const navigate = useNavigate();
-
   const handleGoogleLogin = () => {
-    // TODO: Implement Google OAuth
-    navigate("/dashboard");
+    redirectRouteLogin();
   };
 
   return (

@@ -18,7 +18,7 @@ export function createAuthRoutes(router: Router) {
         const accessToken = tokenService.generateAccessToken(req?.user?.id ?? "")
 
         res.cookie("auth-token", accessToken, getCookieOptions())
-        res.redirect(`${frontendUrl}/`)
+        res.redirect(`${frontendUrl}/dashboard`)
       } catch (error) {
         logger.error("Erro ao gerar token Google:" + JSON.stringify(error, null, 2))
         res.redirect(`${frontendUrl}/`)
