@@ -70,9 +70,10 @@ export class MercadoLivreStrategy implements ScrapingStrategy {
     const productPriceToCents = price * 100
     const oldPriceToCents = oldPrice ? oldPrice * 100 : undefined
     const discountPercentage = oldPrice ? ((oldPrice - price) / oldPrice) * 100 : undefined
-    const discountAmountToCents = oldPriceToCents
-      ? productPriceToCents - oldPriceToCents
-      : undefined
+    const discountAmountToCents =
+      oldPriceToCents && oldPriceToCents > productPriceToCents
+        ? oldPriceToCents - productPriceToCents
+        : undefined
 
     return {
       name: title,

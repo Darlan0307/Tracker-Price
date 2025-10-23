@@ -24,6 +24,7 @@ interface AddProductSectionProps {
   productsLength: number;
   maxProducts: number;
   onUpgradeClick: () => void;
+  disabled: boolean;
 }
 
 const AddProductSection = ({
@@ -34,6 +35,7 @@ const AddProductSection = ({
   productsLength,
   maxProducts,
   onUpgradeClick,
+  disabled,
 }: AddProductSectionProps) => {
   const isLimitReached = productsLength >= maxProducts;
 
@@ -105,13 +107,13 @@ const AddProductSection = ({
                 <PlatformGrid />
               </div>
               <div className="space-y-4 mt-6">
-                <div className="relative">
+                <div className="relative sm:w-full">
                   <Input
                     placeholder="https://www.mercadolivre.com.br/produto/..."
                     value={productUrl}
                     onChange={(e) => setProductUrl(e.target.value)}
                     className="flex-1 text-sm h-12 pl-12 pr-4 border-2 focus:border-primary/50 transition-all bg-background/50 backdrop-blur-sm"
-                    disabled={isLimitReached}
+                    disabled={isLimitReached || disabled}
                   />
                   <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
                     <ExternalLink className="w-4 h-4" />
@@ -127,7 +129,7 @@ const AddProductSection = ({
                     <Button
                       onClick={onAddProduct}
                       className="shadow-glow w-full text-sm h-12 font-semibold"
-                      disabled={isLimitReached}
+                      disabled={isLimitReached || disabled}
                     >
                       <Zap className="w-4 h-4 mr-2" />
                       Monitorar Produto
@@ -161,7 +163,7 @@ const AddProductSection = ({
               >
                 <p className="text-xs text-muted-foreground text-center">
                   💡 <span className="font-medium">Dica:</span> Cole o link
-                  completo do produto do Mercado Livre
+                  completo do produto de umas das plataformas disponíveis
                 </p>
               </motion.div>
               <div className="block md:hidden">

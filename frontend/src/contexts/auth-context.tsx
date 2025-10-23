@@ -39,7 +39,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await apiClient("/auth/logout");
       queryClient.setQueryData(["auth-me"], null);
-      queryClient.clear();
     } catch (error) {
       console.error("Erro ao fazer logout:", error);
     }

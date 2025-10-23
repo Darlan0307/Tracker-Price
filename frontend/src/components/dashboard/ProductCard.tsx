@@ -5,6 +5,18 @@ import { Button } from "@/components/ui/button";
 import { ExternalLink, Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Product } from "@/types/product";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { formatPrice, mapPlatform } from "@/utils";
 
 interface ProductCardProps {
   product: Product;
@@ -15,12 +27,6 @@ interface ProductCardProps {
 const ProductCard = ({ product, onRemove, index }: ProductCardProps) => {
   const [imageLoaded, setImageLoaded] = useState(false);
 
-  const calculateDiscount = (original: number, current: number) => {
-    return Math.round(((original - current) / original) * 100);
-  };
-
-  const discount = calculateDiscount(product.originalPrice, product.currentPrice);
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -30,18 +36,24 @@ const ProductCard = ({ product, onRemove, index }: ProductCardProps) => {
     >
       <Card className="overflow-hidden hover:shadow-glow transition-all duration-300">
         <div className="relative group">
-          <div className={`aspect-video bg-muted ${!imageLoaded ? 'animate-pulse' : ''}`}>
-            <img 
-              src={product.imageUrl} 
+          <div
+            className={`aspect-video bg-muted ${
+              !imageLoaded ? "animate-pulse" : ""
+            }`}
+          >
+            <img
+              src={product.image}
               alt={product.name}
-              className={`w-full h-full object-cover transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+              className={`w-full h-full object-cover transition-opacity duration-300 ${
+                imageLoaded ? "opacity-100" : "opacity-0"
+              }`}
               onLoad={() => setImageLoaded(true)}
             />
           </div>
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          
+
           <Badge className="absolute top-3 right-3 bg-background/90 text-foreground">
-            {product.platform}
+            {mapPlatform(product.platform)}
           </Badge>
         </div>
 
@@ -52,23 +64,34 @@ const ProductCard = ({ product, onRemove, index }: ProductCardProps) => {
               <div>
                 <div className="flex items-baseline gap-2">
                   <span className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                    R$ {product.currentPrice.toFixed(2)}
+                    {formatPrice(product.currentPrice, product.currency)}
                   </span>
-                  {discount > 0 && (
+                  {product.discountPercentage > 0 && (
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
-                      transition={{ type: "spring", stiffness: 500, damping: 15 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 500,
+                        damping: 15,
+                      }}
                     >
-                      <Badge variant="default" className="bg-accent text-accent-foreground">
-                        -{discount}%
+                      <Badge
+                        variant="default"
+                        className="bg-accent text-accent-foreground relative -top-2"
+                      >
+                        {product.discountPercentage}% OFF
                       </Badge>
                     </motion.div>
                   )}
                 </div>
-                {product.originalPrice > product.currentPrice && (
+                {product.oldPrice > product.currentPrice ? (
                   <span className="text-sm text-muted-foreground line-through">
-                    R$ {product.originalPrice.toFixed(2)}
+                    {formatPrice(product.oldPrice, product.currency)}
+                  </span>
+                ) : (
+                  <span className="text-sm text-muted-foreground">
+                    Atualmente o produto está sem desconto
                   </span>
                 )}
               </div>
@@ -76,26 +99,52 @@ const ProductCard = ({ product, onRemove, index }: ProductCardProps) => {
           </div>
 
           <div className="flex gap-2">
-            <motion.div className="flex-1" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-              <Button 
-                variant="outline" 
+            <motion.div
+              className="flex-1"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <Button
+                variant="outline"
                 className="w-full group"
-                onClick={() => window.open(product.url, '_blank')}
+                onClick={() => window.open(product.link, "_blank")}
+                disabled={product.name === "Carregando..."}
               >
                 <ExternalLink className="w-4 h-4 mr-2 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                 Ver Produto
               </Button>
             </motion.div>
-            
+
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => onRemove(product.id)}
-                className="hover:bg-destructive hover:text-destructive-foreground transition-colors"
-              >
-                <Trash2 className="w-4 h-4" />
-              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="hover:bg-destructive hover:text-destructive-foreground transition-colors"
+                    disabled={product.name === "Carregando..."}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Tem certeza que deseja remover este produto?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Esta ação não pode ser desfeita, o produto será removido
+                      permanentemente.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction onClick={() => onRemove(product.id)}>
+                      Confirmar
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </motion.div>
           </div>
         </div>
