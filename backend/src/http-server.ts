@@ -11,6 +11,7 @@ import { apiLimiter, createAuthMiddleware, errorHandler } from "@infra/middlewar
 import { prismaDB } from "@shared/prisma"
 import { ProductScraper } from "@app/products/services"
 import { createProductsRoutes } from "@app/products/http"
+import { createUsersRoutes } from "@app/users/http"
 
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173"
 
@@ -97,6 +98,7 @@ export default class HttpServer {
     const router = Router()
     this.app.use(router)
     createAuthRoutes(router)
+    createUsersRoutes(router)
     createProductsRoutes(router, this.productScraper)
     this.app.use(errorHandler)
   }

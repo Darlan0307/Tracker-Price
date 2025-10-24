@@ -94,6 +94,7 @@ export function useProducts(params?: UseProductsParams) {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: productKeys.lists() });
+      // TODO: Verificar necessidade de invalidar o cache do user
     },
   });
 
@@ -132,6 +133,7 @@ export function useProducts(params?: UseProductsParams) {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: productKeys.lists() });
+      // TODO: Verificar necessidade de invalidar o cache do user
     },
   });
 

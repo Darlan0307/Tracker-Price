@@ -1,4 +1,4 @@
-import { PlatformType } from "@/types";
+import { PlanType, PlatformType } from "@/types";
 
 export function mapPlatform(platformType: PlatformType): string {
   switch (platformType) {
@@ -16,5 +16,18 @@ export function mapPlatform(platformType: PlatformType): string {
     //   return "Casas Bahia";
     default:
       return "Desconhecido";
+  }
+}
+
+export function mapPlan(planType: PlanType): string {
+  switch (planType) {
+    case "GRATUITO":
+      return "Gratuito";
+    case "PRO":
+      return "Pro";
+    case "PREMIUM":
+      return "Premium";
+    default:
+      return "Gratuito";
   }
 }

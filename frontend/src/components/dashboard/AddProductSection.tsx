@@ -15,12 +15,13 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import PlatformGrid from "./PlatformGrid";
+import { PlanType } from "@/types";
 
 interface AddProductSectionProps {
   productUrl: string;
   setProductUrl: (url: string) => void;
   onAddProduct: () => void;
-  currentPlan: string;
+  currentPlan: PlanType;
   productsLength: number;
   maxProducts: number;
   onUpgradeClick: () => void;
@@ -106,7 +107,7 @@ const AddProductSection = ({
               <div className="hidden md:block">
                 <PlatformGrid />
               </div>
-              <div className="space-y-4 mt-6">
+              <div className="space-y-4 mt-6 flex flex-col lg:gap-4 lg:flex-row lg:space-y-0">
                 <div className="relative sm:w-full">
                   <Input
                     placeholder="https://www.mercadolivre.com.br/produto/..."
@@ -136,7 +137,7 @@ const AddProductSection = ({
                     </Button>
                   </motion.div>
 
-                  {currentPlan === "Gratuito" && isLimitReached && (
+                  {currentPlan !== PlanType.PREMIUM && isLimitReached && (
                     <motion.div
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}

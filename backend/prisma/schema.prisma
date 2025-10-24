@@ -9,6 +9,11 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+enum PlanType {
+  GRATUITO
+  PRO
+  PREMIUM
+}
 model User {
   id           String  @id @default(uuid())
   providerId   String? @unique @map("provider_id") @db.VarChar(100)
@@ -18,7 +23,11 @@ model User {
   name  String? @db.VarChar(100)
   image String? @db.VarChar(500)
 
-  isPremium Boolean @default(false)
+  planType PlanType @default(GRATUITO)
+
+  qtdMonitoredProducts Int @default(0)
+
+  acceptEmailNotification Int @default(1)
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)

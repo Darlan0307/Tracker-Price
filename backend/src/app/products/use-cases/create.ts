@@ -1,5 +1,6 @@
 import { BaseUseCase, validatePlatformLink } from "@shared/use-cases"
 import {
+  AccessDeniedEntityError,
   CreateEntityError,
   InvalidInputError,
   NotFoundError,
@@ -10,8 +11,14 @@ import { ProductRepository } from "../repository"
 import { ProductSchema } from "../schema"
 import { ProductScraper } from "../services"
 import { UserRepository } from "@app/users/repository"
+import { userCanAddProduct } from "@app/users"
 
-type UseCaseErrors = InvalidInputError | NotFoundError | CreateEntityError | ProductScraperError
+type UseCaseErrors =
+  | InvalidInputError
+  | NotFoundError
+  | CreateEntityError
+  | ProductScraperError
+  | AccessDeniedEntityError
 export class ProductCreateUseCase extends BaseUseCase<
   createProductPayload,
   Product,
@@ -41,16 +48,24 @@ export class ProductCreateUseCase extends BaseUseCase<
       )
     }
 
+    if (!userCanAddProduct(userExists)) {
+      return new AccessDeniedEntityError("Você atingiu o limite de produtos permitidos.")
+    }
+
     const scrapedData = await this.productScraper.scrapeProduct(data.link)
 
     if (scrapedData instanceof ProductScraperError || scrapedData instanceof NotFoundError) {
       return scrapedData
     }
 
-    return this.productRepository.save({
+    const newProduct = this.productRepository.save({
       userId,
       ...scrapedData
     })
+
+    await this.userRepository.increaseMonitoredProducts(userId)
+
+    return newProduct
   }
 }
 

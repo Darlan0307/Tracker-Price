@@ -1,22 +1,29 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Crown, MessageCircle, TrendingDown, Zap } from "lucide-react";
+import { PlanType } from "@/types";
 
 interface UpgradeCTAProps {
-  currentPlan: string;
+  currentPlan: PlanType;
   onUpgradeClick: () => void;
-  hasProducts: boolean;
+  isVisible: boolean;
 }
 
-const UpgradeCTA = ({ currentPlan, onUpgradeClick, hasProducts }: UpgradeCTAProps) => {
-  if (currentPlan !== "Gratuito" || !hasProducts) return null;
+const UpgradeCTA = ({
+  currentPlan,
+  onUpgradeClick,
+  isVisible,
+}: UpgradeCTAProps) => {
+  if (currentPlan !== PlanType.PREMIUM || !isVisible) return null;
 
   return (
     <Card className="mb-8 overflow-hidden bg-gradient-to-br from-primary/10 via-accent/10 to-secondary/10 border-2 border-primary/20">
       <CardContent className="p-4 md:p-8">
         <div className="grid md:grid-cols-2 gap-6 items-center">
           <div>
-            <h3 className="text-xl md:text-2xl font-bold mb-3">Desbloqueie Todo o Potencial</h3>
+            <h3 className="text-xl md:text-2xl font-bold mb-3">
+              Desbloqueie Todo o Potencial
+            </h3>
             <ul className="space-y-2 mb-4">
               <li className="flex items-center gap-2 text-xs md:text-sm">
                 <MessageCircle className="w-4 h-4 text-primary flex-shrink-0" />
@@ -31,7 +38,11 @@ const UpgradeCTA = ({ currentPlan, onUpgradeClick, hasProducts }: UpgradeCTAProp
                 <span>Atualizações de preço em tempo real</span>
               </li>
             </ul>
-            <Button onClick={onUpgradeClick} size="sm" className="shadow-lg w-full md:w-auto">
+            <Button
+              onClick={onUpgradeClick}
+              size="sm"
+              className="shadow-lg w-full md:w-auto"
+            >
               <Crown className="w-4 h-4 mr-2" />
               Ver Planos Premium
             </Button>

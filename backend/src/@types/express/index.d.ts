@@ -12,7 +12,9 @@ declare global {
       email: string
       name: string | null
       image: string | null
-      isPremium: boolean
+      planType: PlanType
+      qtdMonitoredProducts: number
+      acceptEmailNotification: boolean
       createdAt: Date
       updatedAt: Date
       deletedAt: Date | null

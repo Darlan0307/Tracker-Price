@@ -8,20 +8,25 @@ import AuthHeader from "@/components/AuthHeader";
 import AddProductSection from "@/components/dashboard/AddProductSection";
 import UpgradeCTA from "@/components/dashboard/UpgradeCTA";
 import ProductCard from "@/components/dashboard/ProductCard";
-import { validatePlatformLink } from "@/utils";
+import { mapPlan, validatePlatformLink } from "@/utils";
 import { useProducts } from "@/hooks";
 import { Skeleton } from "@/components/ui/skeleton";
 import LoadingScraping from "@/components/animations/LoadingScraping";
 import DashboardFooter from "@/components/dashboard/DashboardFooter";
 import PaginationComponent from "@/components/dashboard/PaginationComponent";
+import { useAuth } from "@/contexts";
+import {
+  maxProductsByPlan,
+  userCanAddProduct,
+} from "@/utils/validate-rules-user";
+import { PlanType } from "@/types";
 
 const Dashboard = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [productUrl, setProductUrl] = useState("");
-  const currentPlan = "Gratuito"; // TODO: Get from user data
-  const maxProducts =
-    currentPlan === "Gratuito" ? 1 : currentPlan === "Pro" ? 10 : 50;
   const [currentPage, setCurrentPage] = useState(1);
+  const maxProducts = maxProductsByPlan[user?.planType] ?? 1;
 
   const {
     isLoading,
@@ -46,9 +51,18 @@ const Dashboard = () => {
       return;
     }
 
-    if (products.length >= maxProducts) {
-      toast.error(
-        `Você atingiu o limite de ${maxProducts} produto(s) do plano ${currentPlan}`,
+    if (!userCanAddProduct(user)) {
+      if (user.planType === PlanType.PREMIUM) {
+        toast.warning(
+          "Você já atingiu o limite de produtos permitidos para o plano Premium, estamos trabalhando para aumentar essa quantidade"
+        );
+        return;
+      }
+
+      toast.warning(
+        `Você atingiu o limite de ${maxProducts} produto(s) do plano ${mapPlan(
+          user.planType
+        )}`,
         {
           action: {
             label: "Fazer Upgrade",
@@ -75,7 +89,8 @@ const Dashboard = () => {
   const handleRemoveProduct = async (id: string) => {
     try {
       toast.warning("O produto está sendo removido...");
-      await deleteProductAsync(id);
+      const { message } = await deleteProductAsync(id);
+      console.log(message);
       toast.success("Produto removido do monitoramento");
     } catch (error) {
       toast.error("Erro ao remover produto. Por favor, tente novamente");
@@ -95,17 +110,17 @@ const Dashboard = () => {
           productUrl={productUrl}
           setProductUrl={setProductUrl}
           onAddProduct={handleAddProduct}
-          currentPlan={currentPlan}
-          productsLength={products.length}
+          currentPlan={user.planType}
+          productsLength={totalRecords}
           maxProducts={maxProducts}
           onUpgradeClick={handleUpgradeClick}
           disabled={isLoading || isCreating || isDeleting}
         />
 
         <UpgradeCTA
-          currentPlan={currentPlan}
+          currentPlan={user.planType}
           onUpgradeClick={handleUpgradeClick}
-          hasProducts={products.length > 0}
+          isVisible={!userCanAddProduct(user)}
         />
 
         <div>

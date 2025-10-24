@@ -8,12 +8,14 @@ import { Badge } from "@/components/ui/badge";
 import { Mail, MessageCircle, Bell } from "lucide-react";
 import { toast } from "sonner";
 import AuthHeader from "@/components/AuthHeader";
+import ButtonBackDashboard from "@/components/ui-primitive/ButtonBackDashboard";
+import { useAuth } from "@/contexts";
 
 const Notifications = () => {
+  const { user } = useAuth();
   const [emailEnabled, setEmailEnabled] = useState(true);
   const [whatsappEnabled, setWhatsappEnabled] = useState(false);
-  const [priceDropThreshold, setPriceDropThreshold] = useState("10");
-  const [email, setEmail] = useState("usuario@exemplo.com");
+  const [email, setEmail] = useState(user?.email ?? "");
   const [whatsapp, setWhatsapp] = useState("");
 
   const handleSave = () => {
@@ -22,9 +24,16 @@ const Notifications = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
-      <AuthHeader currentPlan="Gratuito" />
+      <AuthHeader />
 
-      <div className="container mx-auto px-4 py-4 md:py-8 max-w-3xl">
+      <div className="max-w-[100px] ml-20 relative top-4 hidden lg:block">
+        <ButtonBackDashboard />
+      </div>
+
+      <div className="container mx-auto px-4 py-4 md:py-5 max-w-3xl lg:py-8">
+        <div className="block max-w-[100px] mb-5 lg:hidden">
+          <ButtonBackDashboard />
+        </div>
         <Card className="p-4 md:p-6 mb-6 shadow-card animate-fade-in">
           <div className="flex items-center gap-3 mb-4 md:mb-6">
             <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
@@ -41,7 +50,6 @@ const Notifications = () => {
           </div>
 
           <div className="space-y-4 md:space-y-6">
-            {/* Email Notifications */}
             <div className="p-3 md:p-4 rounded-lg border bg-gradient-card">
               <div className="flex items-center justify-between mb-4 gap-3">
                 <div className="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
@@ -79,7 +87,6 @@ const Notifications = () => {
               )}
             </div>
 
-            {/* WhatsApp Notifications */}
             <div className="p-3 md:p-4 rounded-lg border bg-gradient-card relative">
               <Badge
                 variant="outline"

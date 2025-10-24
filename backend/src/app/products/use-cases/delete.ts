@@ -29,6 +29,10 @@ export class ProductDeleteUseCase extends BaseUseCase<string, void, DeleteEntity
       return new AccessDeniedEntityError(`O usuário não tem permissão para deletar este produto.`)
     }
 
-    return this.productRepository.delete(productId)
+    await this.productRepository.delete(productId)
+
+    await this.userRepository.decreaseMonitoredProducts(userId)
+
+    return
   }
 }

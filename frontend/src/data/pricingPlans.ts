@@ -1,27 +1,29 @@
+import { PlanType } from "@/types";
 import { Sparkles, Zap, Crown } from "lucide-react";
 
 export const pricingPlans = [
   {
     name: "Gratuito",
+    type: PlanType.GRATUITO,
     icon: Sparkles,
     price: "R$ 0",
     period: "/mês",
     description: "Perfeito para começar",
     features: [
-      "Monitore até 3 produtos",
+      "Monitoramento de 1 produto",
       "Notificações por email",
       "Verificação diária de preços",
-      "Histórico de 7 dias",
-      "Suporte básico"
+      "Sem suporte",
     ],
-    cta: "Plano Atual",
+    cta: "Gratuito",
     variant: "outline" as const,
-    popular: false
+    popular: false,
   },
   {
     name: "Pro",
+    type: PlanType.PRO,
     icon: Zap,
-    price: "R$ 19,90",
+    price: "R$ 4,99",
     period: "/mês",
     description: "Para economizadores sérios",
     features: [
@@ -31,16 +33,17 @@ export const pricingPlans = [
       "Histórico de 90 dias",
       "Suporte prioritário",
       "Metas de preço customizadas",
-      "Exportar dados de preços"
+      "Exportar dados de preços",
     ],
     cta: "Atualizar para Pro",
     variant: "default" as const,
-    popular: true
+    popular: true,
   },
   {
     name: "Premium",
+    type: PlanType.PREMIUM,
     icon: Crown,
-    price: "R$ 39,90",
+    price: "R$ 49,99",
     period: "/mês",
     description: "Para usuários avançados",
     features: [
@@ -52,10 +55,10 @@ export const pricingPlans = [
       "Análises avançadas",
       "Acesso à API",
       "Colaboração em equipe",
-      "Integrações customizadas"
+      "Integrações customizadas",
     ],
     cta: "Atualizar para Premium",
     variant: "default" as const,
-    popular: false
-  }
+    popular: false,
+  },
 ];

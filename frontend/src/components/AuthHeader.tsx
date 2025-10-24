@@ -10,6 +10,7 @@ import {
 import { useAuth } from "@/contexts";
 import { Crown, Bell, HelpCircle, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const AuthHeader = () => {
   const { user, logout } = useAuth();
@@ -19,11 +20,12 @@ const AuthHeader = () => {
   const handleLogout = async () => {
     await logout();
     navigate("/");
+    toast.success("Você foi desconectado com sucesso.");
   };
 
   const getInitials = (name: string) => {
     return name
-      .split(" ")
+      ?.split(" ")
       .map((n) => n[0])
       .join("")
       .toUpperCase()
@@ -48,9 +50,9 @@ const AuthHeader = () => {
           <DropdownMenuTrigger asChild>
             <button className="focus:outline-none focus:ring-2 focus:ring-primary rounded-full">
               <Avatar className="h-10 w-10 cursor-pointer hover:ring-2 hover:ring-primary transition-all">
-                <AvatarImage src={user.image} alt={user.name} />
+                <AvatarImage src={user?.image} alt={user?.name} />
                 <AvatarFallback className="bg-primary text-primary-foreground">
-                  {getInitials(user.name)}
+                  {getInitials(user?.name)}
                 </AvatarFallback>
               </Avatar>
             </button>
@@ -59,8 +61,8 @@ const AuthHeader = () => {
           <DropdownMenuContent align="end" className="w-64">
             <DropdownMenuLabel>
               <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium">{user.name}</p>
-                <p className="text-xs text-muted-foreground">{user.email}</p>
+                <p className="text-sm font-medium">{user?.name}</p>
+                <p className="text-xs text-muted-foreground">{user?.email}</p>
               </div>
             </DropdownMenuLabel>
 
