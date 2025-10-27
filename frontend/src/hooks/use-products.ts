@@ -94,7 +94,7 @@ export function useProducts(params?: UseProductsParams) {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: productKeys.lists() });
-      // TODO: Verificar necessidade de invalidar o cache do user
+      queryClient.invalidateQueries({ queryKey: ["auth-me"] });
     },
   });
 
@@ -133,7 +133,7 @@ export function useProducts(params?: UseProductsParams) {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: productKeys.lists() });
-      // TODO: Verificar necessidade de invalidar o cache do user
+      queryClient.invalidateQueries({ queryKey: ["auth-me"] });
     },
   });
 

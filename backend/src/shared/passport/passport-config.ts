@@ -24,7 +24,10 @@ passport.use(
         })
 
         if (user) {
-          return done(null, user)
+          return done(null, {
+            ...user,
+            acceptEmailNotification: Boolean(user.acceptEmailNotification)
+          })
         }
 
         user = await prismaDB.user.findUnique({
@@ -55,7 +58,10 @@ passport.use(
           })
         }
 
-        done(null, user)
+        done(null, {
+          ...user,
+          acceptEmailNotification: Boolean(user.acceptEmailNotification)
+        })
       } catch (error) {
         logger.error("Erro ao autenticar usuário Google:" + JSON.stringify(error, null, 2))
         done(error, false)
@@ -76,7 +82,14 @@ passport.deserializeUser(async (user: User, done) => {
       }
     })
 
-    done(null, userExists)
+    if (!userExists) {
+      return done(null, false)
+    }
+
+    done(null, {
+      ...userExists,
+      acceptEmailNotification: Boolean(userExists.acceptEmailNotification)
+    })
   } catch (error) {
     done(error, null)
   }

@@ -12,16 +12,25 @@ import { prismaDB } from "@shared/prisma"
 import { ProductScraper } from "@app/products/services"
 import { createProductsRoutes } from "@app/products/http"
 import { createUsersRoutes } from "@app/users/http"
+import { ServiceEmail } from "@shared/services/interfaces"
+import { ServiceResend } from "@shared/services/external"
 
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173"
 
 export default class HttpServer {
   private app: Express
   private productScraper: ProductScraper
+  private serviceEmail: ServiceEmail
 
   constructor() {
     this.app = express()
     this.productScraper = new ProductScraper()
+    const isProduction = process.env.NODE_ENV === "production"
+    this.serviceEmail = new ServiceResend(
+      process.env?.RESEND_SECRET ?? "",
+      process.env?.EMAIL_DOMAIN ?? "",
+      isProduction
+    )
   }
 
   async createApp(): Promise<Express> {
@@ -99,7 +108,7 @@ export default class HttpServer {
     this.app.use(router)
     createAuthRoutes(router)
     createUsersRoutes(router)
-    createProductsRoutes(router, this.productScraper)
+    createProductsRoutes(router, this.productScraper, this.serviceEmail)
     this.app.use(errorHandler)
   }
 }
