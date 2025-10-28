@@ -88,7 +88,7 @@ export const productRegisteredTemplate = (data: ProductAlertData) => ({
           .product-details {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+
           }
           .detail-row {
             display: flex;
@@ -104,7 +104,7 @@ export const productRegisteredTemplate = (data: ProductAlertData) => ({
             color: #333;
           }
           .price {
-            font-size: 24px;
+            font-size: 18px;
             font-weight: bold;
             color: #667eea;
           }
@@ -112,7 +112,7 @@ export const productRegisteredTemplate = (data: ProductAlertData) => ({
             display: inline-block;
             background: #667eea;
             color: white;
-            padding: 4px 12px;
+            padding: 4px 8px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
@@ -196,14 +196,14 @@ export const productRegisteredTemplate = (data: ProductAlertData) => ({
                 <div class="product-info">
                   <h2 class="product-name">${data.productName}</h2>
                   <div class="product-details">
-                    <div class="detail-row">
+                    <p class="detail-row">
                       <span class="label">Plataforma:</span>
                       <span class="platform-badge">${data.platform}</span>
-                    </div>
-                    <div class="detail-row">
+                    </p>
+                    <p class="detail-row">
                       <span class="label">Preço atual:</span>
                       <span class="price">${data.currentPrice}</span>
-                    </div>
+                    </p>
                   </div>
                 </div>
               </div>
